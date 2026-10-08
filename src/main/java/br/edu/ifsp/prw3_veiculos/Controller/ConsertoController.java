@@ -2,6 +2,7 @@ package br.edu.ifsp.prw3_veiculos.Controller;
 
 import br.edu.ifsp.prw3_veiculos.dto.DadosListagemConserto;
 import br.edu.ifsp.prw3_veiculos.dto.DadosListagemFull;
+import br.edu.ifsp.prw3_veiculos.dto.DadosAtualizacaoConserto;
 import br.edu.ifsp.prw3_veiculos.model.Conserto;
 import br.edu.ifsp.prw3_veiculos.repository.ConsertoRepository;
 import jakarta.validation.Valid;
@@ -24,16 +25,18 @@ public class ConsertoController {
     }
 
     @GetMapping
-    public List<DadosListagemConserto> listar() {
-        return consertoRepository.findAllByAtivoTrue().stream()
+    public ResponseEntity<List<DadosListagemConserto>> listar() {
+        List<DadosListagemConserto> consertos = consertoRepository.findAllByAtivoTrue().stream()
                 .map(DadosListagemConserto::new)
                 .toList();
+        return ResponseEntity.ok(consertos);
     }
 
     @GetMapping("/full")
-    public Page<DadosListagemFull> listarCompleto(Pageable pageable) {
-        return consertoRepository.findAll(pageable)
+    public ResponseEntity<Page<DadosListagemFull>> listarCompleto(Pageable pageable) {
+        Page<DadosListagemFull> consertos = consertoRepository.findAll(pageable)
                 .map(DadosListagemFull::new);
+        return ResponseEntity.ok(consertos);
     }
 
     @PostMapping
@@ -55,5 +58,37 @@ public class ConsertoController {
         else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<DadosListagemConserto> atualizar(
+            @PathVariable Long id,
+            @Valid @RequestBody DadosAtualizacaoConserto dados
+    ) {
+        Optional<Conserto> consertoOptional = consertoRepository.findById(id);
+        if (consertoOptional.isEmpty() || !consertoOptional.get().isAtivo()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Conserto conserto = consertoOptional.get();
+        conserto.setDataSaida(dados.dataSaida());
+        conserto.getMecanicoResponsavel().setNome(dados.nomeMecanico());
+        conserto.getMecanicoResponsavel().setAnosDeExperiencia(dados.anosDeExperiencia());
+
+        Conserto atualizado = consertoRepository.save(conserto);
+        return ResponseEntity.ok(new DadosListagemConserto(atualizado));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> excluirLogicamente(@PathVariable Long id) {
+        Optional<Conserto> consertoOptional = consertoRepository.findById(id);
+        if (consertoOptional.isEmpty() || !consertoOptional.get().isAtivo()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Conserto conserto = consertoOptional.get();
+        conserto.setAtivo(false);
+        consertoRepository.save(conserto);
+        return ResponseEntity.noContent().build();
     }
 }
