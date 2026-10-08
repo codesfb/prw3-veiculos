@@ -1,0 +1,2 @@
+ALTER TABLE conserto
+ADD COLUMN ativo BOOLEAN;

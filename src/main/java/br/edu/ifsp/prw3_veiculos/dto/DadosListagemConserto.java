@@ -3,6 +3,7 @@ package br.edu.ifsp.prw3_veiculos.dto;
 import br.edu.ifsp.prw3_veiculos.model.Conserto;
 
 public record DadosListagemConserto(
+        Long id,
         String dataEntrada,
         String dataSaida,
         String nomeMecanico,
@@ -12,6 +13,7 @@ public record DadosListagemConserto(
 ) {
     public DadosListagemConserto(Conserto conserto) {
         this(
+                conserto.getId(),
                 conserto.getDataEntrada(),
                 conserto.getDataSaida(),
                 conserto.getMecanicoResponsavel().getNome(),
