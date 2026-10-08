@@ -51,4 +51,6 @@ public class Conserto {
             @AttributeOverride(name = "cor", column = @Column(name = "veiculo_cor"))
     })
     private Veiculo veiculo;
+    @NotNull
+    boolean ativo;
 }

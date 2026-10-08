@@ -9,13 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/consertos")
@@ -28,7 +25,7 @@ public class ConsertoController {
 
     @GetMapping
     public List<DadosListagemConserto> listar() {
-        return consertoRepository.findAll().stream()
+        return consertoRepository.findAllByAtivoTrue().stream()
                 .map(DadosListagemConserto::new)
                 .toList();
     }
@@ -42,7 +39,21 @@ public class ConsertoController {
     @PostMapping
     public ResponseEntity<Conserto> cadastrar(@Valid @RequestBody Conserto conserto) {
         conserto.setId(null);
+        conserto.setAtivo(true);
         Conserto salvo = consertoRepository.save(conserto);
         return ResponseEntity.status(HttpStatus.CREATED).body(salvo);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DadosListagemConserto> getConsertoById(@PathVariable Long id) {
+        Optional<Conserto> consertoOptional = consertoRepository.findById(id);
+
+        if (consertoOptional.isPresent()) {
+            Conserto conserto = consertoOptional.get();
+            return ResponseEntity.ok(new DadosListagemConserto(conserto));
+        }
+        else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
