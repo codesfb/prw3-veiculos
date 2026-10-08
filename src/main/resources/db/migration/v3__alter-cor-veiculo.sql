@@ -1,0 +1,2 @@
+ALTER TABLE veiculo
+ADD COLUMN cor VARCHAR(20);
