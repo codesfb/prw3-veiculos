@@ -10,7 +10,7 @@ public class Prw3VeiculosApplication {
 
 
 		SpringApplication.run(Prw3VeiculosApplication.class, args);
-		System.out.println("Hello worl");
+
 	}
 
 }

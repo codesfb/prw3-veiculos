@@ -8,8 +8,8 @@ import java.time.LocalDate;
 
 @Data
 public class Conserto {
-    private LocalDate dataEntrada;
-    private LocalDate dataSaida;
+    private String  dataEntrada;
+    private String dataSaida;
     @Embedded
     private Mecanico mecanicoResponsavel;
     @Embedded
