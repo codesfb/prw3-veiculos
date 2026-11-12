@@ -2,13 +2,13 @@ package br.edu.ifsp.prw3_veiculos;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootApplication
 public class Prw3VeiculosApplication {
 	//fabio e douglas
 	public static void main(String[] args) {
 		SpringApplication.run(Prw3VeiculosApplication.class, args);
-
 	}
 
 }
